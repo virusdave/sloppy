@@ -1,0 +1,18 @@
+# Initial gitignore
+
+# Ignore top-level dot-directories
+.*/
+
+# OSX stuff
+.DS_Store
+
+# Ignore vim swapfiles
+.*.sw?
+
+# Ignore sbt outputs
+target/
+
+# Ensime-related stuff.
+.ensime
+
+
