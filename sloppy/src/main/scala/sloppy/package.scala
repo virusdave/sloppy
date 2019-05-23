@@ -1,4 +1,4 @@
-import slick.lifted.{FlatShapeLevel, Shape}
+import slick.lifted.{FlatShapeLevel, Rep, Shape}
 
 //*********************************************************************************************************
 // Types, utilities, aliases, etc for query DSL snippet composition.
@@ -41,6 +41,11 @@ import slick.lifted.{FlatShapeLevel, Shape}
 // in dotty: https://github.com/scala/bug/issues/10420
 package object sloppy {
   type FlattishShape[RA, A] = Shape[/*_ <: */FlatShapeLevel, RA, A, RA]
+
+  // Convenience type aliases where the connection between Lifted and Non-lifted types is trivial (Lift == Rep[Base])
+  type QueryContentsLens[E, DestShape[_, _] <: DestinationShape[_, _]] = QueryContentsLensFull[Rep[E], E, DestShape]
+  type QueryContentsAppender[E, RV, V] = QueryContentsAppenderFull[Rep[E], E, RV, V]
+  type QueryContentsFilter[E] = QueryContentsFilterFull[Rep[E], E]
 }
 
 // Remaining items TODO:

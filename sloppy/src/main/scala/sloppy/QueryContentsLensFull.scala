@@ -1,6 +1,6 @@
 package sloppy
 
-import slick.lifted.Query
+import slick.lifted.{Query, Rep}
 
 // A query transformer that knows how to act on any query which
 // contains a type that we can extract an `RE` (Lifted) from.
@@ -13,16 +13,18 @@ import slick.lifted.Query
 // This roughly corresponds to a profunctor lens container of
 //  `(Query[RA, A, C], (RA => RE)) => Query[RV, V, C]`
 
-abstract class QueryContentsLens[RE, DestShape[_, _] <: DestinationShape[_, _]] {
+abstract class QueryContentsLensFull[RE, E, DestShape[_, _] <: DestinationShape[_, _]] {
   // The query transformation API.  Concrete implementations must supply this.
   def transformTo[RA, A, C[_]](
-      qwe: QueryWithExtractor[RA, A, C, RE])(
+      qwe: QWE[RA, A, C])(
       implicit _aShape: FlattishShape[RA, A])
   : Query[DestShape[RA, A]#RV, DestShape[RA, A]#V, C]
+
+  // Type alias for a relevant [[QueryWithExtractor]]
+  final type QWE[RA, A, C[_]] = QueryWithExtractor[RA, A, C, RE, E]
 }
 
-
-object QueryContentsLens {
+object QueryContentsLensFull {
   // Helper to produce the appropriate `DestinationShape`s needed.
   // This represents a transformation that maps into a constant row shape.
   final class To[_RV, _V] {

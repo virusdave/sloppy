@@ -1,6 +1,6 @@
 package sloppy
 
-import slick.lifted.Query
+import slick.lifted.{Query, Rep}
 
 // Given an `RE` (which should be LIFTED) from a query's rows, produce
 // a query of the same shape (`RA`, `A`, `C`) that represents a filtering
@@ -12,19 +12,19 @@ import slick.lifted.Query
 //
 // This roughly corresponds to:
 //  `(Query[RA, A, C], (RA => RE)) => Query[RA, A, C]`
-abstract class QueryContentsFilter[RE] extends QueryContentsLens[RE, QueryContentsFilter.Filter] {
+abstract class QueryContentsFilterFull[RE, E] extends QueryContentsLensFull[RE, E, QueryContentsFilterFull.Filter] {
   def filter[RA, A, C[_]](
-      qwe: QueryWithExtractor[RA, A, C, RE])(
+      qwe: QWE[RA, A, C])(
       implicit _aShape: FlattishShape[RA, A])
   : Query[RA, A, C]
 
   final override def transformTo[RA, A, C[_]](
-      qwe: QueryWithExtractor[RA, A, C, RE])(
+      qwe: QWE[RA, A, C])(
       implicit _aShape: FlattishShape[RA, A])
   : Query[RA, A, C] = filter(qwe)
 }
 
-object QueryContentsFilter {
+object QueryContentsFilterFull {
   // Helper to produce the appropriate `DestinationShape`s needed.
   // This represents a transformation that filters rows without changing
   // the row shape.
